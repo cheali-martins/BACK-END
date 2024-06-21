@@ -9,7 +9,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import UserRoute from "./routes/userRoutes.js"
 import cookieParser from "cookie-parser";
-import PostRoute from "./routes/postRoutes.js"
+import PostRoute from "./routes/postRoutes.js";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -17,6 +18,11 @@ dotenv.config();
 const app = express()
 
 app.use(express.json());
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+})
+);
 app.use(cookieParser());
 
 // you can change the 'app' to any word
@@ -38,10 +44,10 @@ app.use("/post", PostRoute);
 
 // connecting the database to our server
 mongoose.connect(db).then(() => {
-    console.log("the database connected successfully");
+    console.log("The database connected successfully");
 
     app.listen(port, () => {
-        console.log(`server running on port ${port}`);
+        console.log(`Server running on port ${port}`);
     });
 
 }).catch(() => {
