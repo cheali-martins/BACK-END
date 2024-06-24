@@ -170,7 +170,7 @@ const getUsers = async (req, res) => {
             message: "Interval server error",
         });
     }
-}
+};
 
 const getUser = async (req, res) => {
     try {
@@ -197,6 +197,36 @@ const getUser = async (req, res) => {
         });
     }
 
-}
+};
 
-export { register, login, getUsers, getUser };
+// mon-24th-june-24
+const validateUser = async (req, res) => {
+    const userdetails = req.user;
+    console.log("the userdetails =", userdetails);
+
+    if (!userdetails) {
+        res.status(500).json({
+            valid: false,
+            message: "Access denied",
+        });
+        return;
+    }
+
+    const userdata = {
+        _id: userdetails._id,
+        name: userdetails.name,
+        email: userdetails.email,
+        bio: userdetails.bio,
+        image: userdetails.image,
+    };
+
+    res.status(200).json({
+        valid: true,
+        message: "Access granted",
+        userDetails: userdata,
+    });
+
+};
+
+
+export { register, login, getUsers, getUser, validateUser };
