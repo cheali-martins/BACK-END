@@ -21,7 +21,7 @@ const register = async (req, res) => {
             return;
         }
 
-        // check if user already exists
+        // check if user already exists. u can only findOne with a field that is uniqu in your model
         const userExists = await User.findOne({ email: email }).exec();
 
         if (userExists) {
@@ -56,7 +56,12 @@ const register = async (req, res) => {
         });
 
 
-    } catch (error) { }
+    } catch (error) {
+        res.status(500).json({
+            sucess: false,
+            message: "Internal Server Error!",
+        });
+    }
 };
 
 // login business logic
@@ -122,16 +127,16 @@ const login = async (req, res) => {
 
         // the cookies - note that u can call the cookies with any name. it is ideal not to make known which iis the access or refresh
         res.cookie("access", accessToken, {
-            httpOnly: true,
-            secure: true,
+            // httpOnly: true,
+            // secure: true,
             sameSite: "none",
             maxAge: 30 * 1000,
             // convert the maxAge to milisec
         })
 
         res.cookie("refresh", refreshToken, {
-            httpOnly: true,
-            secure: true,
+            // httpOnly: true,
+            // secure: true,
             sameSite: "none",
             maxAge: 1 * 60 * 1000,
             // convert the maxAge to milisec 5 days, 24 hrs in 5 days, 60 mins in 5 days, 60 seconds in 5 days * 1000.

@@ -26,6 +26,12 @@ const UserSchema = mongoose.Schema(
             type: String,
             required: [true, "Input password"],
         },
+        // ADDING if user is an admin
+
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
     },
     // this indicates fields to let us know when a user creates a db
     {

@@ -1,4 +1,4 @@
-import express from "express"
+import express from "express";
 import { getUser, getUsers, login, register, validateUser } from "../controllers/userControllers.js";
 import { checkAndRenewToken } from "../middleware/validate-token.js";
 

@@ -12,6 +12,7 @@ export const checkAndRenewToken = (req, res, next) => {
     // checking the integrity of the access token
     if (!accessToken) {
         //do something
+
         // to check if the refresh token is still valid
         if (!refreshToken) {
             // do something
@@ -57,8 +58,8 @@ export const checkAndRenewToken = (req, res, next) => {
                         console.log("the new access token => ", accessToken);
 
                         res.cookie("access", accessToken, {
-                            httpOnly: true,
-                            secure: true,
+                            // httpOnly: true,
+                            // secure: true,
                             sameSite: "none",
                             maxAge: 1 * 60 * 1000,
                         });
@@ -98,4 +99,28 @@ export const checkAndRenewToken = (req, res, next) => {
             }
         });
     }
+};
+
+export const isAdmin = (req, res, next) => {
+    const ifReqUserExist = req.user
+    if (!ifReqUserExist) {
+        res.status(400).json({
+            success: false,
+            message: "Not an Admin!!!",
+        });
+        return;
+    };
+
+    console.log("Req.user details =", ifReqUserExist);
+
+    // checking if user is an admin
+    if (!ifReqUserExist.isAdmin) {
+        res.status(403).json({
+            success: false,
+            message: "Not Authorized!",
+        });
+        return;
+    } else {
+        next();
+    };
 };

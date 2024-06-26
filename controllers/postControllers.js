@@ -90,4 +90,66 @@ const getPost = async (req, res) => {
 
 }
 
-export { newPost, getPosts, getPost };
+// update post
+const updatePost = async (req, res) => {
+    try {
+        const authUser = req.user;
+        console.log("Is user admmin? ", authUser);
+
+        const { id } = req.params;
+        const body = req.body;
+
+        console.log("The post ID = ", id);
+        // finding if the post exists
+        const postExist = await Post.findById(id).exec();
+        if (!postExist) {
+            res.status(404).json({
+                suceess: false,
+                message: "Post doesn't exist",
+            });
+            return;
+
+        }
+        console.log("The existing post ==", postExist);
+
+        // checking if user is authorized
+        const check = postExist.author_id === authUser._id.toHexString() && authUser.isAdmin;
+        console.log("The check =>", check);
+        if (!check) {
+            res.status(403).json({
+                suceess: false,
+                message: "Access Denied!",
+            });
+            return;
+        }
+
+        // when u are sending sth u send through the body (req.body)
+
+        const updatedPost = await Post.findByIdAndUpdate(postExist._id, body, { new: true }).exec();
+
+        if (!updatedPost) {
+
+            res.status(40).json({
+                suceess: false,
+                message: "Error details",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            sucess: true,
+            message: "Posted Upadated Successfully!",
+            updatedPost,
+        });
+
+        console.log("The updated post = ", updatedPost);
+
+    } catch (error) {
+        res.status(500).json({
+            suceess: false,
+            message: "Internal server error",
+        });
+    }
+}
+
+export { newPost, getPosts, getPost, updatePost };
