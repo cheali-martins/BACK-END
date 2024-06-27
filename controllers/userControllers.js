@@ -130,7 +130,7 @@ const login = async (req, res) => {
             // httpOnly: true,
             // secure: true,
             sameSite: "none",
-            maxAge: 30 * 1000,
+            maxAge: 1 * 60 * 1000,
             // convert the maxAge to milisec
         })
 
@@ -138,7 +138,7 @@ const login = async (req, res) => {
             // httpOnly: true,
             // secure: true,
             sameSite: "none",
-            maxAge: 1 * 60 * 1000,
+            maxAge: 2 * 60 * 1000,
             // convert the maxAge to milisec 5 days, 24 hrs in 5 days, 60 mins in 5 days, 60 seconds in 5 days * 1000.
         })
 
@@ -203,6 +203,7 @@ const getUser = async (req, res) => {
     }
 
 };
+
 
 // mon-24th-june-24
 const validateUser = async (req, res) => {
