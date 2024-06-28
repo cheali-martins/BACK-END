@@ -58,8 +58,8 @@ export const checkAndRenewToken = (req, res, next) => {
                         console.log("the new access token => ", accessToken);
 
                         res.cookie("access", accessToken, {
-                            // httpOnly: true,
-                            // secure: true,
+                            httpOnly: true,
+                            secure: true,
                             sameSite: "none",
                             maxAge: 1 * 60 * 1000,
                         });

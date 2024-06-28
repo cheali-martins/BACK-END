@@ -64,6 +64,8 @@ const register = async (req, res) => {
     }
 };
 
+
+
 // login business logic
 const login = async (req, res) => {
     try {
@@ -127,16 +129,16 @@ const login = async (req, res) => {
 
         // the cookies - note that u can call the cookies with any name. it is ideal not to make known which iis the access or refresh
         res.cookie("access", accessToken, {
-            // httpOnly: true,
-            // secure: true,
+            httpOnly: true,
+            secure: true,
             sameSite: "none",
             maxAge: 1 * 60 * 1000,
             // convert the maxAge to milisec
         })
 
         res.cookie("refresh", refreshToken, {
-            // httpOnly: true,
-            // secure: true,
+            httpOnly: true,
+            secure: true,
             sameSite: "none",
             maxAge: 2 * 60 * 1000,
             // convert the maxAge to milisec 5 days, 24 hrs in 5 days, 60 mins in 5 days, 60 seconds in 5 days * 1000.
@@ -155,7 +157,6 @@ const login = async (req, res) => {
     }
 
 };
-
 
 
 // working on middleware
@@ -234,5 +235,27 @@ const validateUser = async (req, res) => {
 
 };
 
+// working on logout
+const logout = async (req, res) => {
+    try {
 
-export { register, login, getUsers, getUser, validateUser };
+        // we clear the cookies
+        res.clearCookie("access");
+        res.clearCookie("refresh");
+
+        res.status(200).json({
+            sucess: true,
+            message: "Logged out",
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Log out failed!",
+        });
+    }
+
+};
+
+
+export { register, login, getUsers, getUser, validateUser, logout };

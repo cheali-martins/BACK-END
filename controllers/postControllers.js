@@ -47,12 +47,15 @@ const newPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
     try {
-        const users = await Post.find({}).exec();
+        // using query to get post
+        const query = req.query;
+        console.log("The category query =", query);
+        const posts = await Post.find({ category: query.category }).exec();
 
         res.status(200).json({
             suceess: true,
             message: "Posts fetched",
-            users,
+            posts,
         });
 
     } catch (error) {
@@ -67,7 +70,7 @@ const getPost = async (req, res) => {
     try {
         const { id } = req.params
 
-        const user = await Post.findById(id).exec();
+        const post = await Post.findById(id).exec();
         if (!user) {
             return res.status(404).json({
                 suceess: false,
@@ -150,6 +153,67 @@ const updatePost = async (req, res) => {
             message: "Internal server error",
         });
     }
+};
+
+// deleting post... note we use params to get the id
+const deletePost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const authUser = req.user;
+
+        console.log("The post ID = ", postId);
+
+
+        // find if post exists
+        const postExist = await Post.findById(postId).exec();
+        if (!postExist) {
+            res.status(404).json({
+                suceess: false,
+                message: "Post doesn't exist",
+            });
+            return;
+
+        }
+        console.log("The full post = ", postExist);
+
+        // checking if user is authorized
+        const check = postExist.author_id === authUser._id.toHexString() && authUser.isAdmin;
+        console.log("The check =>", check);
+        if (!check) {
+            res.status(403).json({
+                suceess: false,
+                message: "Access Denied!",
+            });
+            return;
+        }
+
+        // => now delete post <=
+        const deletedPost = await Post.findByIdAndDelete(postExist?._id).exec();
+
+        if (!deletedPost) {
+
+            res.status(40).json({
+                suceess: false,
+                message: "Post not deleted",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            sucess: true,
+            message: "Posted Deleted Successfully!",
+            deletedPost,
+        });
+
+
+    } catch (error) {
+        res.status(500).json({
+            suceess: false,
+            message: "Internal server error",
+        });
+    }
+    return;
+
 }
 
-export { newPost, getPosts, getPost, updatePost };
+export { newPost, getPosts, getPost, updatePost, deletePost };
