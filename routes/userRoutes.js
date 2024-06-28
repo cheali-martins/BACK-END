@@ -9,6 +9,6 @@ router.post("/login", login);
 router.get("/all-users", checkAndRenewToken, getUsers);
 router.get("/single-user/:id", checkAndRenewToken, getUser);
 router.get("/validate-user", checkAndRenewToken, validateUser);
-router.get("/logout", logout)
+router.get("/logout", checkAndRenewToken, logout)
 
 export default router;

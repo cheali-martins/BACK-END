@@ -132,7 +132,7 @@ const login = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 1 * 60 * 1000,
+            maxAge: 20 * 60 * 1000,
             // convert the maxAge to milisec
         })
 
@@ -140,7 +140,7 @@ const login = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 2 * 60 * 1000,
+            maxAge: 1 * 24 * 60 * 60 * 1000,
             // convert the maxAge to milisec 5 days, 24 hrs in 5 days, 60 mins in 5 days, 60 seconds in 5 days * 1000.
         })
 
@@ -211,13 +211,13 @@ const validateUser = async (req, res) => {
     const userdetails = req.user;
     console.log("the userdetails =", userdetails);
 
-    if (!userdetails) {
-        res.status(500).json({
-            valid: false,
-            message: "Access denied",
-        });
-        return;
-    }
+    // if (!userdetails) {
+    //     res.status(500).json({
+    //         valid: false,
+    //         message: "Access denied",
+    //     });
+    //     return;
+    // }
 
     const userdata = {
         _id: userdetails._id,
@@ -240,8 +240,16 @@ const logout = async (req, res) => {
     try {
 
         // we clear the cookies
-        res.clearCookie("access");
-        res.clearCookie("refresh");
+        res.clearCookie("access", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        });
+        res.clearCookie("refresh", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        });
 
         res.status(200).json({
             sucess: true,
